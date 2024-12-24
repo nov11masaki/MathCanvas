@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>過程ごとの振り返りの確認</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function adjustTableSize() {
+            var tables = document.querySelectorAll('table');
+            tables.forEach(function(table) {
+                if (window.innerWidth < 600) {
+                    table.style.width = '100%';
+                } else {
+                    table.style.width = '80%';
+                }
+            });
+        }
+        window.onload = adjustTableSize;
+        window.onresize = adjustTableSize;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>過程ごとの振り返り</h2>
+        <div align="right"><a href="https://nov11masaki.main.jp/MathCanvas/teacher/top.html">Topに戻る</a></div>
+        <form method="post" action="hurikaeri.php">
+            <select name="username">
+                <option>testuser1</option>
+                <option>student01</option>
+                <option>student02</option>
+                <option>student03</option>
+                <option>student04</option>
+                <option>student05</option>
+                <option>student06</option>
+                <option>student07</option>
+                <option>student08</option>
+                <option>student09</option>
+                <option>student10</option>
+                <option>student11</option>
+                <option>student12</option>
+                <option>student13</option>
+                <option>student14</option>
+                <option>student15</option>
+                <option>student16</option>
+                <option>student17</option>
+                <option>student18</option>
+                <option>student19</option>
+                <option>student20</option>
+                <option>student21</option>
+                <option>student22</option>
+                <option>student23</option>
+                <option>student24</option>
+                <option>student25</option>
+                <option>student26</option>
+                <option>student27</option>
+                <option>student28</option>
+                <option>student29</option>
+                <option>student30</option>
+                <option>student31</option>
+                <option>student32</option>
+                <option>student33</option>
+                <option>student34</option>
+                <option>student35</option>
+                <option>student36</option>
+                <option>student37</option>
+                <option>student38</option>
+                <option>student39</option>
+                <option>student40</option>
+            </select>
+            <br>
+            <button type="submit">検索</button>
+        </form>
+        <br>
+        <div id="result">
+            <!-- 結果をここに表示 -->
+        </div>
+　　　<!-- ユーザー選択フォーム 
+        <form method="post" action="hurikaeri1.php" target="_blank">
+            <select name="username">
+                <option>student01</option>
+                <option>student02</option>
+                <option>student03</option>
+                <option>student04</option>
+                <option>student05</option>
+                <option>student06</option>
+                <option>student07</option>
+                <option>student08</option>
+                <option>student09</option>
+                <option>student10</option>
+                <option>student11</option>
+                <option>student12</option>
+                <option>student13</option>
+                <option>student14</option>
+                <option>student15</option>
+                <option>student16</option>
+                <option>student17</option>
+                <option>student18</option>
+                <option>student19</option>
+                <option>student20</option>
+                <option>student21</option>
+                <option>student22</option>
+                <option>student23</option>
+                <option>student24</option>
+                <option>student25</option>
+                <option>student26</option>
+                <option>student27</option>
+                <option>student28</option>
+                <option>student29</option>
+                <option>student30</option>
+                <option>student31</option>
+                <option>student32</option>
+                <option>student33</option>
+                <option>student34</option>
+                <option>student35</option>
+                <option>student36</option>
+                <option>student37</option>
+                <option>student38</option>
+                <option>student39</option>
+                <option>student40</option>
+            </select>
+            <br>
+            <button type="submit">検索</button>
+        </form>-->
+    </div>
+</body>
+</html>

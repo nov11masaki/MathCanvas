@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>授業の振り返り</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2, h3, h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .left-section, .right-section {
+            flex: 0 0 50%; /* 左右のセクションを等しい幅に */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .image-section, .review-section {
+            border: 2px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white; /* 背景色を追加 */
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .image-container .session {
+            display: flex;
+            flex-wrap: wrap; /* 複数行にわたる要素を表示 */
+            gap: 10px;
+        }
+        .image-container img {
+            width: calc(40% - 10px); /* 4列になるように幅を設定 */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%; /* テーブルを幅いっぱいに */
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        textarea {
+            width: 100%;
+            height: 150px; /* テキストエリアの高さを広げる */
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左側セクション -->
+        <div class="left-section">
+            <div class="image-section">
+                <h3>過程の画像</h3>
+                <div class="image-container" id="image-container">
+                    <!-- ここに画像が表示される -->
+                </div>
+            </div>
+            <div class="review-section">
+                <h3>過去の自己評価</h3>
+                <div id="review-section">
+                    <!-- ここに自己評価テーブルが表示される -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側セクション -->
+        <div class="right-section">
+            <div class="review-section">
+                <h3>今日の授業の振り返りをしましょう</h3>
+                <form action="review_submit.php" method="post">
+                    <div class="form-group">
+                        <h4>今日の授業においてやったこと</h4>
+                        <textarea name="kakikomi1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <h4>学んだこと、気づいたこと、考えたこと</h4>
+                        <textarea name="kakikomi2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <h4>次に活かしたいこと</h4>
+                        <textarea name="kakikomi3"></textarea>
+                    </div>
+                    <button type="submit">送信</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 画像の表示
+            $.ajax({
+                url: 'get_images.php',
+                method: 'GET',
+                success: function(data) {
+                    var imageContainer = $('#image-container');
+                    data.forEach(function(session) {
+                        var sessionDiv = $('<div>').addClass('session');
+                        sessionDiv.append('<h4>' + session.folder + '</h4>'); // 回数のラベル
+                        sessionDiv.append('<br>'); // 回数の後に改行
+                        session.images.forEach(function(image) {
+                            var imgElement = $('<img>').attr('src', image);
+                            sessionDiv.append(imgElement);
+                        });
+                        imageContainer.append(sessionDiv);
+                    });
+                }
+            });
+
+            // 自己評価データの表示
+            $.ajax({
+                url: 'get_reviews.php',
+                method: 'GET',
+                success: function(data) {
+                    var reviewSection = $('#review-section');
+                    if (data.length > 0) {
+                        var table = $('<table>');
+                        table.append('<tr><th>回数</th><th>時刻</th><th>自己評価</th><th>考え方について</th><th>補助線の引いた意図</th></tr>');
+                        data.forEach(function(row) {
+                            var tr = $('<tr>');
+                            row.forEach(function(cell) {
+                                tr.append('<td>' + cell + '</td>');
+                            });
+                            table.append(tr);
+                        });
+                        reviewSection.append(table);
+                    } else {
+                        reviewSection.append('<p>自己評価のデータが見つかりませんでした。</p>');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

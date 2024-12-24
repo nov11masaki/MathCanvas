@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>過程ごとの振り返りの確認</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function adjustTableSize() {
+            var tables = document.querySelectorAll('table');
+            tables.forEach(function(table) {
+                if (window.innerWidth < 600) {
+                    table.style.width = '100%';
+                } else {
+                    table.style.width = '80%';
+                }
+            });
+        }
+        window.onload = adjustTableSize;
+        window.onresize = adjustTableSize;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>過程ごとの振り返り</h2>
+        <div align="right"><a href="../top.html">Topに戻る</a></div>
+        <form method="post" action="hurikaeri.php">
+            <select name="username">
+                 <option>student18</option>
+                <option>student19</option>
+                <option>student20</option>
+                <option>student21</option>
+                <option>student22</option>
+                <option>student23</option>
+                <option>student24</option>
+                <option>student25</option>
+                <option>student26</option>
+                <option>student27</option>
+                <option>student28</option>
+                <option>student29</option>
+                <option>student30</option>
+                <option>student31</option>
+                <option>student32</option>
+                <option>student33</option>
+                <option>student34</option>
+            </select>
+            <br>
+            <button type="submit">検索</button>
+        </form>
+        <br>
+        <div id="result">
+            <!-- 結果をここに表示 -->
+        </div>
+    </div>
+</body>
+</html>

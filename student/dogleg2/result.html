@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>自分の考えへの評価</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2, h4 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .left-section, .right-section {
+            flex: 0 0 50%; /* 左右のセクションを等しい幅に */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .image-section, .evaluation-section {
+            border: 2px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .image-container .session {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-container img {
+            width: calc(40% - 10px); /* 3列になるように幅を設定 */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左側セクション -->
+        <div class="left-section">
+            <div class="image-section">
+                <h3>過程の画像</h3>
+                <div class="image-container" id="images-container">
+                    <!-- ここに画像が表示される -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側セクション -->
+        <div class="right-section">
+            <div class="evaluation-section">
+                <h2>この解き方の自己評価を行いましょう。</h2>
+                <form id="evaluation-form" method="post" action="result_submit.php">
+                    <div class="form-group">
+                        <input type="radio" name="hyoka" value="短時間で解けたし、見通しもたった！" id="hyouka1"> 短時間で解けたし、見通しもたった！<br>
+                        <input type="radio" name="hyoka" value="時間はかかって解いたが、見通しはたった！" id="hyouka2"> 時間はかかって解いたが、見通しはたった！<br>
+                        <input type="radio" name="hyoka" value="解けないけど、見通しはたつ" id="hyouka3"> 解けないけど、見通しはたつ<br>
+                        <input type="radio" name="hyoka" value="全く見通しが立たない！" id="hyouka4"> 全く見通しが立たない！<br>
+                    </div>
+
+                    <div class="form-group">
+                        <h2>この解き方について</h2>
+                        <h4>解けた人</h4>
+                        <input type="radio" name="idea" value="簡単にわかりやすく書けた！" id="good1"> 簡単にわかりやすく表現することができた！<br>
+                        <input type="radio" name="idea" value="わかりやすくはないけど、簡単に書けた！" id="good2"> わかりやすくはないけど、簡単に表現することができた！<br>
+                        <input type="radio" name="idea" value="簡単ではないけど、わかりやすく書けた！" id="good3"> 簡単ではないけど、わかりやすく表現することができた！<br>
+                        <h4>解けなかった人</h4>
+                        <input type="radio" name="idea" value="少し違う方法をしてみればできそう。" id="bad3"> 少し違う方法をしてみればできそう。<br>
+                        <input type="radio" name="idea" value="全く違う方法をしてみないとな" id="bad2"> 全く違う方法をしてみないとな<br>
+                        <input type="radio" name="idea" value="全く見当がつかない" id="bad1"> 全く見当がつかない<br>
+                    </div>
+
+                    <div class="form-group">
+                        <h4>なぜその補助線を引こうと考えたか</h4>
+                        <textarea name="support_line_reason"></textarea>
+                    </div>
+                    <button type="submit">送信</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 画像の表示
+            $.ajax({
+                url: 'get_images.php',
+                method: 'GET',
+                success: function(data) {
+                    var imagesContainer = $('#images-container');
+                    data.forEach(function(session) {
+                        var folder = session.folder;
+                        var sessionDiv = $('<div>').addClass('session');
+                        imagesContainer.append('<h4>' + folder + '</h4>');
+                        session.images.forEach(function(image) {
+                            var imgElement = $('<img>').attr('src', image);
+                            sessionDiv.append(imgElement);
+                        });
+                        imagesContainer.append(sessionDiv);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

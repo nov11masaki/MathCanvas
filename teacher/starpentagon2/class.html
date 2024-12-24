@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>みんなの意見</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            display: flex; /* 横並びにする */
+            gap: 20px; /* セクションの間隔 */
+        }
+        .image-section, .review-section {
+            border: 2px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white; /* 背景色を追加 */
+        }
+        .image-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2列表示 */
+            gap: 20px;
+        }
+        .image-box {
+            text-align: center;
+        }
+        .image-box img {
+            max-width: 100%; /* 各画像がセルにフィット */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .image-box p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ここまでの考え</h2>
+        <div align="right"><a href="../top.html">前に戻る</a></div>
+        <div class="content">
+            <!-- 左側セクション -->
+            <div class="image-section">
+                <h3>考え</h3>
+                <div class="image-container" id="image-container">
+                    <!-- ここに画像が表示される -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+    // 画像の表示
+    $.ajax({
+        url: 'class.php',
+        method: 'GET',
+        dataType: 'json', // サーバーからのレスポンスを自動的にJSONとして扱う
+        success: function(data) {
+            console.log(data); // サーバーからのレスポンスを確認
+
+            var imageContainer = $('#image-container');
+
+            if (data.images && Array.isArray(data.images)) {
+                // すべての画像を表示
+                data.images.forEach(function(imageSrc) {
+                    var imageBox = $('<div>').addClass('image-box'); // 画像とファイル名をまとめるdiv
+                    var imgElement = $('<img>').attr('src', imageSrc);
+                    var fileName = imageSrc.split('/').pop(); // ファイル名の抽出
+                    var fileNameElement = $('<p>').text(fileName); // ファイル名を表示する<p>タグ
+
+                    // 画像とファイル名をimageBoxに追加
+                    imageBox.append(imgElement).append(fileNameElement);
+                    imageContainer.append(imageBox); // imageBoxをimageContainerに追加
+                });
+            } else {
+                console.error("画像データが正しく取得できませんでした:", data);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAXリクエストに失敗しました:", textStatus, errorThrown);
+        }
+    });
+});
+    
+    </script>
+</body>
+</html>

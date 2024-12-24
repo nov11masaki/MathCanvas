@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>くの字型</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <style>
+        .option {
+            width: 250px;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        .color > a {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+        .black {
+            background-color: #000000;
+        }
+        .red {
+            background-color: #ff0000;
+        }
+        .blue {
+            background-color: #0000ff;
+        }
+        .white {
+            background-color: #ffffff;
+            border: 1px solid #000; /* 白が見やすいように枠線を追加 */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .next {
+            display: block;
+            margin: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #007bff;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .next:hover {
+            background-color: #0056b3;
+        }
+        .canvas-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .canvas-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 10px;
+        }
+        /* 非表示にするためのスタイル */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>mとnが平行であるとき、角xはいくらかを根拠を明らかにして求めましょう。</h2>
+    <div class="canvas-container">
+        <div class="canvas-wrapper">
+            <h3>描画用キャンバス</h3>
+            <canvas id="canvas" width="800" height="400" style="border: solid 1px #000; box-sizing: border-box;"></canvas>
+            <input type="button" value="消す" id="clear">
+            <a id="save1" href="#" class="hidden">図形を保存</a>
+        </div>
+    </div>
+    <div class="option">
+        <div class="color">
+            色：
+            <a href="" class="black" data-color="0, 0, 0, 1"></a>
+            <a href="" class="red" data-color="255, 0, 0, 1"></a>
+            <a href="" class="blue" data-color="0, 0, 255, 1"></a>
+            <a href="" class="white" data-color="255, 255, 255, 1" data-bold="15"></a> <!-- 白ペンを太く設定 -->
+        </div>
+    </div>
+    <div class="next"><a href="result.html">考え方の自己評価</a></div>
+
+    <script>
+        var cnvs = document.getElementById('canvas');
+        var ctx = cnvs.getContext('2d');
+
+        function loadImageAndDraw(src) {
+            var img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, 850, 400);
+            }
+            img.src = src; // 埋め込みたい画像のパス
+        }
+        // ページロード時に画像をキャンバスに埋め込む
+        loadImageAndDraw('dogleg.jpg'); // star.pngのパスを指定
+
+        const cnvWidth = cnvs.width;
+        const cnvHeight = cnvs.height;
+        var cnvColor = "0, 0, 0, 1";
+        var cnvBold = 3;
+        var clickFlg = 0;
+        var bgColor = "rgb(255,255,255)";
+        setBgColor();
+
+        var strokes1 = [];
+        var currentStroke1 = [];
+        let penState = "停滞";
+        let penColor = cnvColor;
+
+        $("#canvas").mousedown(function(e){
+            clickFlg = 1;
+            penState = "描画開始";
+            penColor = cnvColor;
+            currentStroke1 = [];
+            addPoint(currentStroke1, e.offsetX, e.offsetY);
+        }).mouseup(function(){
+            clickFlg = 0;
+            penState = "描画終了";
+            saveStroke(strokes1, currentStroke1);
+            saveToCSV(currentStroke1); // CSVへの保存
+        }).mousemove(function(e){
+            if(!clickFlg) return false;
+            penState = "停滞";
+            draw(ctx, e.offsetX, e.offsetY);
+            addPoint(currentStroke1, e.offsetX, e.offsetY);
+        });
+
+        $("#canvas").on("touchstart", function(e) {
+            clickFlg = 3;
+            e.preventDefault();
+            penState = "描画開始";
+            penColor = cnvColor;
+            currentStroke1 = [];
+            var touch = e.originalEvent.touches[0];
+            var rect = e.target.getBoundingClientRect(); // キャンバスの位置を取得
+            addPoint(currentStroke1, touch.clientX - rect.left, touch.clientY - rect.top);
+        }).on("touchmove", function(e) {
+            if(!clickFlg) return false;
+            e.preventDefault();
+            penState = "停滞";
+            var touch = e.originalEvent.touches[0];
+            var rect = e.target.getBoundingClientRect(); // キャンバスの位置を取得
+            draw(ctx, touch.clientX - rect.left, touch.clientY - rect.top);
+            addPoint(currentStroke1, touch.clientX - rect.left, touch.clientY - rect.top);
+        });
+
+        function draw(ctx, x, y) {
+            ctx.lineWidth = cnvBold;
+            ctx.strokeStyle = 'rgba('+cnvColor+')';
+            if (clickFlg == "1" || clickFlg == "3") {
+                clickFlg = "2";
+                ctx.beginPath();
+                ctx.lineCap = "round";
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function addPoint(stroke, x, y) {
+            const time = new Date().getTime();
+            stroke.push({state: penState, color: penColor, x: x, y: y, time: time});
+        }
+
+        function saveStroke(strokes, stroke) {
+            if (stroke.length > 0) {
+                strokes.push(stroke);
+            }
+        }
+
+        $(".color a").click(function(){
+            cnvColor = $(this).data("color");
+            return false;
+        });
+
+        $("#clear").click(function(){
+            ctx.clearRect(0,0,cnvWidth,cnvHeight);
+            setBgColor();
+            strokes1 = [];
+        });
+
+        function saveToCSV(stroke) {
+            if (stroke.length > 0) {
+                let csvData = "ペンの状態, ペンの色, X座標, Y座標, 時間\n"; // ヘッダー行
+                stroke.forEach(point => {
+                    csvData += `${point.state}, ${point.color}, ${point.x}, ${point.y}, ${point.time}\n`;
+                });
+                
+                $.ajax({
+                    type: 'POST',
+                    url: 'save_coordinates.php',
+                    data: { csvData: csvData },
+                    success: function(response) {
+                        console.log("CSV保存成功:", response);
+                    }
+                });
+            }
+        }
+
+ 
+
+function setBgColor() {
+     ctx.beginPath();
+     ctx.fillStyle = bgColor;
+     ctx.fillRect(0, 0, cnvWidth, cnvHeight);
+     ctx.closePath();
+    loadImageAndDraw('dogleg.jpg');
+}
+
+function setBgColor2() {
+    ctx2.beginPath();
+    ctx2.fillStyle = bgColor;
+    ctx2.fillRect(0, 0, cnvWidth2, cnvHeight2);
+    ctx2.closePath();
+}
+
+
+var currentSessionFolder;
+
+    $(document).ready(function(){
+        // ページがロードされたときにサーバーに新しいフォルダを作成するリクエストを送信
+        $.ajax({
+            type: 'POST',
+            url: 'start_new_session.php',
+            success: function(response) {
+                currentSessionFolder = response; // 新しいフォルダ名を保持
+            }
+        });
+        setBgColor();
+    });
+
+   // 10秒ごとにキャンバスの画像を保存するための関数
+function autoSaveCanvas(canvasId, saveId) {
+    var canvas = document.getElementById(canvasId);
+    var base64 = canvas.toDataURL("image/jpeg");
+    $.ajax({
+        type: 'POST',
+        url: 'save_image.php',
+        data: {
+            image: base64,
+            type: saveId,
+            sessionFolder: currentSessionFolder
+        },
+        success: function(response) {
+            console.log(response); // 成功時のレスポンスをログに表示
+        }
+    });
+}
+
+// 3秒ごとに自動保存を行う
+setInterval(function() {
+    autoSaveCanvas('canvas', 'save1'); // 描画用キャンバスを保存
+}, 3000); // 3秒
+    
+</script>
+</body>
+</html>

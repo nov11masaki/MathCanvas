@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ここまでの考え</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            display: flex; /* 横並びにする */
+            gap: 20px; /* セクションの間隔 */
+        }
+        .image-section, .review-section {
+            border: 2px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white; /* 背景色を追加 */
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .image-container img {
+            max-width: 150px; /* 画像の最大幅 */
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ここまでの考え</h2>
+        <div align="right"><a href="result_confirm.php">前に戻る</a></div>
+        <div class="content">
+            <!-- 左側セクション -->
+            <div class="image-section">
+                <h3>過程の画像</h3>
+                <div class="image-container" id="image-container">
+                    <!-- ここに画像が表示される -->
+                </div>
+            </div>
+            <div class="review-section">
+                <h3>過去の自己評価</h3>
+                <div id="review-section">
+                    <!-- ここに自己評価テーブルが表示される -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 画像の表示
+            $.ajax({
+                url: 'get_images.php',
+                method: 'GET',
+                success: function(data) {
+                    var imageContainer = $('#image-container');
+                    data.forEach(function(session) {
+                        var sessionDiv = $('<div>').addClass('session');
+                        sessionDiv.append('<h4>' + session.folder + '</h4>');
+                        session.images.forEach(function(image) {
+                            var imgElement = $('<img>').attr('src', image);
+                            sessionDiv.append(imgElement);
+                        });
+                        imageContainer.append(sessionDiv);
+                    });
+                }
+            });
+
+            // 自己評価データの表示
+            $.ajax({
+                url: 'get_reviews.php',
+                method: 'GET',
+                success: function(data) {
+                    var reviewSection = $('#review-section');
+                    if (data.length > 0) {
+                        var table = $('<table>');
+                        table.append('<tr><th>回数</th><th>時刻</th><th>自己評価</th><th>考え方について</th><th>補助線を引いた意図</th></tr>');
+                        data.forEach(function(row) {
+                            var tr = $('<tr>');
+                            row.forEach(function(cell) {
+                                tr.append('<td>' + cell + '</td>');
+                            });
+                            table.append(tr);
+                        });
+                        reviewSection.append(table);
+                    } else {
+                        reviewSection.append('<p>自己評価のデータが見つかりませんでした。</p>');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
