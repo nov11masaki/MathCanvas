@@ -58,10 +58,10 @@ $username = $_SESSION['username'];
     <h1>MathCanvasへようこそ</h1>
     <div class="username"><h3><?php echo htmlspecialchars($username); ?> さん</h3></div>
     <h2>中学校(数学)</h2>
-    <!--<a href="pentagon/draw1.html">多角形の内角の和</a>-->
-　 <!--<a href="dogleg2/draw1.html">くの字型の角</a>-->
-    <!--<a href="starpentagon/draw1.html">星形五角形の内角の和</a>-->
-    <a href="starpentagon2/review.html">星形五角形の内角の和の振り返り</a>
+    <a href="pentagon/draw1.html">多角形の内角の和</a>
+    <a href="dogleg2/draw1.html">くの字型の角</a>
+    <a href="starpentagon/draw1.html">星形五角形の内角の和(CD)</a>
+    <a href="starpentagon2/draw1.html">星形五角形の内角の和(AB)</a>
 </div>
 </body>
 </html>
