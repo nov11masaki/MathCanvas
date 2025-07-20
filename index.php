@@ -61,7 +61,7 @@
       <option>student15</option>
       <option>student16</option>
       <option>student17</option>
-      <!--<option>student18</option>
+      <<option>student18</option>
       <option>student19</option>
       <option>student20</option>
       <option>student21</option>
@@ -77,7 +77,7 @@
       <option>student31</option>
       <option>student32</option>
       <option>student33</option>
-      <option>student34</option-->
+      <option>student34</option>
       <option>teacher1</option>
       <option>teacher2</option>
       <option>teacher3</option>
